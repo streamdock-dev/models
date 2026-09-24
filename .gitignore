@@ -1,0 +1,17 @@
+# Large binary model files, downloaded at dev time or by CI, never stored in git.
+# Use src/Scripts/build_and_upload_models.ps1 to build and publish models to the package registry.
+bsrgan/
+cugan/
+esrgan/
+facedetect/
+facerestore/
+hat/
+rife/
+swinir/
+waifu2x/
+
+# Intermediate files created by export scripts -- cleaned up after each build.
+_weights_cache/
+.cache/
+_rvrt_src/
+__pycache__/

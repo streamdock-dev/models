@@ -1,0 +1,23 @@
+# Requirements for the ONNX export scripts in this directory.
+#
+# Install with:
+#   pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.2,<2.6"
+#   pip install -r requirements.txt
+#
+# torch must be installed separately via the PyTorch CPU wheel index above
+# because the default PyPI torch package bundles CUDA (~2 GB).
+# Pinned to <2.6 because torch 2.6+ changed torch.onnx.export to always use
+# the dynamo-based exporter, which has compatibility issues with some models.
+#
+# onnxsim is optional: the export scripts will skip the simplification pass
+# if it is not installed, but the resulting models will still be valid.
+
+# Core (required by all scripts)
+onnx>=1.16
+onnxruntime>=1.18
+
+# Used by export_esrgan_onnx.py, export_facerestore_onnx.py, patch_esrgan_resize.py
+numpy>=1.24
+
+# Optional: graph simplification pass in all export scripts
+onnxsim>=0.4

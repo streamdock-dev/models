@@ -257,13 +257,12 @@ because the exported ONNX graph encodes the RRDBNet computation graph.
 ## Real-CUGAN
 
 Applies to: `up2x-latest-no-denoise.onnx`, `up2x-latest-conservative.onnx`,
-`up2x-latest-denoise2x.onnx`, `up2x-latest-denoise3x.onnx`,
-`waifu2x-cunet-scale2-noise0.onnx`, `waifu2x-cunet-scale2-noise1.onnx`,
-`waifu2x-cunet-scale2-noise2.onnx`, `waifu2x-cunet-scale2-noise3.onnx`
+`up2x-latest-denoise2x.onnx`, `up2x-latest-denoise3x.onnx`
 
-All eight are exported by `export_cugan_onnx.py` from the same bilibili/ailab
-`updated_weights.zip` release. The `waifu2x-cunet-*` names reflect Real-CUGAN's own
-UpCunet2x / RealWaifuUpScaler architecture, not nagadomi's separate waifu2x project.
+All four are exported by `export_cugan_onnx.py` from bilibili/ailab's
+`updated_weights.zip` release. The separately-listed `waifu2x-cunet-*` files are a
+different project entirely (see the Waifu2x section below), despite Real-CUGAN's own
+architecture also being called UpCunet2x.
 
 - **Project**: Real-CUGAN (Real Cascade U-Nets for Anime Image Super Resolution)
 - **Authors**: bilibili / ailab
@@ -313,6 +312,96 @@ Applies to: `rife/rife4.18_*.onnx`
 MIT License
 
 Copyright (c) 2021 HolyWu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## Waifu2x (nunif)
+
+Applies to: `waifu2x-cunet-scale2-noise0.onnx`, `waifu2x-cunet-scale2-noise1.onnx`,
+`waifu2x-cunet-scale2-noise2.onnx`, `waifu2x-cunet-scale2-noise3.onnx`
+
+- **Project**: nunif / waifu2x (CUNet art models)
+- **Author**: nagadomi
+- **Repository**: https://github.com/nagadomi/nunif
+- **Upstream checkpoints**: the `cunet/art` scale2x noise0-noise3 weights from
+  `waifu2x_pretrained_models_20250502.zip` in the
+  [nunif 0.0.0 release](https://github.com/nagadomi/nunif/releases/tag/0.0.0)
+- **Architecture source**: the CUNet architecture, fetched at export time from the nunif
+  repository and not redistributed here
+- **License**: MIT License
+
+```
+The MIT License
+
+Copyright (C) 2019-2023 nagadomi <https://github.com/nagadomi/>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## RIFE 4.7 (Practical-RIFE)
+
+Applies to: `rife47.onnx`
+
+- **Project**: Practical-RIFE / RIFE: Real-Time Intermediate Flow Estimation for Video
+  Frame Interpolation
+- **Authors**: Zhewei Huang, Tianyuan Zhang, Wen Heng, Boxin Shi, Shuchang Zhou
+- **Repository**: https://github.com/hzwer/Practical-RIFE
+- **Upstream weights**: RIFE 4.7 flownet weights, released by the authors under the same
+  MIT licence as the project itself
+- **ONNX conversion**: `rife47_ensemble_True_scale_1_sim.onnx` from the community
+  redistribution at https://huggingface.co/yuvraj108c/rife-onnx
+- **License**: MIT License (per the upstream RIFE project)
+
+> Unlike every other model published here, this file is a third-party ONNX conversion
+> rather than one produced by this project's own `export_*_onnx.py` scripts. The
+> conversion repository declares no licence of its own; the MIT grant above comes from
+> the upstream RIFE weights it was converted from, which is what governs redistribution.
+> It is kept because it is the only RIFE export with dynamic height/width axes, making it
+> the resolution-independent fallback when no fixed-resolution rife4.18 tier matches a
+> stream. Replacing it with a self-built equivalent requires adding dynamic-axes support
+> to `export_rife_onnx.py`, which currently exports fixed shapes only.
+
+```
+MIT License
+
+Copyright (c) 2021 hzwer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
