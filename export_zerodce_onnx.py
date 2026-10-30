@@ -43,8 +43,12 @@ Output file (default):
     ThirdParty/models/zerodcepp/zerodcepp.onnx
 
 License:
-    Zero-DCE++ is released under the MIT licence.
-    See https://github.com/Li-Chongyi/Zero-DCE_extension
+    Zero-DCE++ is NOT open source: its README makes the code (and the Epoch99.pth weights
+    committed alongside it) "available for academic research purpose only", under
+    Creative Commons Attribution-NonCommercial 4.0. The repository has no LICENSE file.
+    See https://github.com/Li-Chongyi/Zero-DCE_extension#license
+    The built model is therefore never published in this repository's releases; build it
+    yourself, for your own non-commercial use.
 """
 
 from __future__ import annotations

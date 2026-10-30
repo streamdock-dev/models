@@ -53,8 +53,9 @@ Apache-2.0 or MIT. Full per-model attribution, upstream checkpoint, and licence 
 this repository.
 
 Some models StreamDock supports are **deliberately absent** because their licences forbid
-redistribution -- CodeFormer (S-Lab 1.0), RVRT (CC-BY-NC 4.0) and EDVR (CC-BY-NC-SA 4.0) are all
-non-commercial. Their export scripts are here, so you can build them yourself from upstream
+redistribution -- CodeFormer (S-Lab 1.0), RVRT (CC-BY-NC 4.0), EDVR (CC-BY-NC-SA 4.0) and
+Zero-DCE++ (CC-BY-NC 4.0) are all non-commercial. RobustVideoMatting is GPL-3.0, so it isn't
+published here either. Their export scripts are here, so you can build them yourself from upstream
 weights, but the built models will never be published in this repository's releases.
 
 The export scripts themselves are MIT, © StreamDock Authors.

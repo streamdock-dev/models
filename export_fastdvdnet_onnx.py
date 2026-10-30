@@ -8,13 +8,14 @@ Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
     pip install onnx onnxsim
 
-    FastDVDnet must be installed from the m-tassano/fastdvdnet repository:
+    FastDVDnet's model definition comes from a clone of m-tassano/fastdvdnet (it isn't a
+    pip package -- there is no setup.py):
         git clone https://github.com/m-tassano/fastdvdnet
-        pip install -e ./fastdvdnet
+    and is found with --fastdvdnet-repo (default: ./fastdvdnet).
 
-    Pretrained weights (fastdvdnet_nodvd.pth) are downloaded automatically on first run
-    from the GitHub releases of m-tassano/fastdvdnet, or can be placed manually in
-    ~/.cache/fastdvdnet/fastdvdnet_nodvd.pth.
+    Pretrained weights (model.pth, committed in that repository) are downloaded
+    automatically on first run from a pinned commit, or can be placed manually in
+    ~/.cache/fastdvdnet/model.pth.
 
 The script will:
   1. Load the FastDVDnet color model weights.
@@ -47,8 +48,8 @@ Output files (default):
     ThirdParty/models/fastdvdnet/fastdvdnet-sigma50.onnx
 
 License:
-    FastDVDnet is released under the BSD 3-Clause licence.
-    See https://github.com/m-tassano/fastdvdnet
+    FastDVDnet (code and weights) is released under the MIT licence.
+    See https://github.com/m-tassano/fastdvdnet/blob/master/LICENSE
 """
 
 from __future__ import annotations
@@ -72,9 +73,12 @@ except ImportError:
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_OUT_DIR = REPO_ROOT / "ThirdParty" / "models" / "fastdvdnet"
-WEIGHTS_CACHE = Path.home() / ".cache" / "fastdvdnet" / "fastdvdnet_nodvd.pth"
+WEIGHTS_CACHE = Path.home() / ".cache" / "fastdvdnet" / "model.pth"
+# The repository's own trained weights, pinned to a commit. Its only release (v0.1) has no
+# assets, so the URL this script used to name (releases/download/v0.1/...) never existed.
+WEIGHTS_COMMIT = "c8fdf6182a0340e89dd18f5df25b47337cbede6f"
 WEIGHTS_URL = (
-    "https://github.com/m-tassano/fastdvdnet/releases/download/v0.1/fastdvdnet_nodvd.pth"
+    f"https://raw.githubusercontent.com/m-tassano/fastdvdnet/{WEIGHTS_COMMIT}/model.pth"
 )
 
 SIGMA_VARIANTS = [15, 25, 50]
@@ -160,11 +164,13 @@ def download_weights(path: Path) -> None:
         sys.exit(1)
 
 
-def load_model(device: str = "cpu") -> Any:
+def load_model(repo: Path, device: str = "cpu") -> Any:
     """Load FastDVDnet color model from the m-tassano/fastdvdnet package.
 
     Parameters
     ----------
+    repo:
+        Clone of m-tassano/fastdvdnet; its ``models.py`` defines FastDVDnet.
     device:
         PyTorch device string, e.g. ``"cpu"`` or ``"cuda"``.
 
@@ -173,12 +179,13 @@ def load_model(device: str = "cpu") -> Any:
     Any
         Loaded FastDVDnet model in eval mode.
     """
+    sys.path.insert(0, str(repo.resolve()))
     try:
-        from fastdvdnet import FastDVDnet
+        from models import FastDVDnet
     except ImportError as exc:
         print(
-            "ERROR: fastdvdnet is not installed.\n"
-            "Clone the repo and install it with:  pip install -e ./fastdvdnet\n"
+            f"ERROR: FastDVDnet's models.py was not found in {repo}.\n"
+            "Clone it with:  git clone https://github.com/m-tassano/fastdvdnet\n"
             f"Details: {exc}",
             file=sys.stderr,
         )
@@ -189,6 +196,8 @@ def load_model(device: str = "cpu") -> Any:
     print("Loading FastDVDnet model weights...")
     model = FastDVDnet(num_input_frames=NUM_FRAMES)
     state_dict = torch.load(str(WEIGHTS_CACHE), map_location=device)
+    # Trained under nn.DataParallel, so every key carries a "module." prefix.
+    state_dict = {k.removeprefix("module."): v for k, v in state_dict.items()}
     model.load_state_dict(state_dict)
     model = model.to(device)
     model.eval()
@@ -288,6 +297,12 @@ def main() -> None:
         help="Noise sigma variant to export: 15, 25, 50, or all (default: all)",
     )
     parser.add_argument(
+        "--fastdvdnet-repo",
+        type=Path,
+        default=Path("fastdvdnet"),
+        help="Clone of m-tassano/fastdvdnet (default: ./fastdvdnet)",
+    )
+    parser.add_argument(
         "--no-simplify",
         action="store_true",
         help="Skip the onnxsim graph simplification pass.",
@@ -300,7 +315,7 @@ def main() -> None:
     else:
         sigmas_to_export = [int(args.sigma)]
 
-    model = load_model(device="cpu")
+    model = load_model(args.fastdvdnet_repo, device="cpu")
 
     for sigma in sigmas_to_export:
         print(f"\n--- Exporting sigma={sigma} ---")

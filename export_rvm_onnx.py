@@ -10,7 +10,7 @@ Requirements:
     pip install onnx onnxsim
 
     RobustVideoMatting must be cloned from GitHub:
-        git clone https://github.com/PeterL1997/RobustVideoMatting
+        git clone https://github.com/PeterL1n/RobustVideoMatting
     Then either:
         - Add it to PYTHONPATH: set PYTHONPATH=RobustVideoMatting  (Windows)
         - Or place model/model.py and model/mobilenetv3.py alongside this script.
@@ -48,8 +48,9 @@ Output file (default):
 Models are discovered automatically by ModelCatalog.DiscoverForPipeline(Matting).
 
 License:
-    RobustVideoMatting is released under the MIT licence.
-    See https://github.com/PeterL1997/RobustVideoMatting
+    RobustVideoMatting has been released under GPL-3.0 since 2021-09-16 (its weights
+    included). The built model is not published in this repository's releases.
+    See https://github.com/PeterL1n/RobustVideoMatting
 """
 
 from __future__ import annotations
@@ -164,7 +165,7 @@ def load_model(weights_path: Path) -> Any:
     except ImportError:
         print(
             "ERROR: Could not import MattingNetwork. Clone RobustVideoMatting and add it to PYTHONPATH:\n"
-            "  git clone https://github.com/PeterL1997/RobustVideoMatting\n"
+            "  git clone https://github.com/PeterL1n/RobustVideoMatting\n"
             "  set PYTHONPATH=RobustVideoMatting  (Windows)\n"
             "  export PYTHONPATH=RobustVideoMatting  (Linux/macOS)",
             file=sys.stderr,

@@ -29,8 +29,8 @@ Output file (default):
     ThirdParty/models/audiosr/audiosr-basic.onnx
 
 License:
-    AudioSR is released under the Apache 2.0 license.
-    See https://github.com/haoheliu/AudioSR
+    AudioSR's code is MIT: https://github.com/haoheliu/versatile_audio_super_resolution
+    The audiosr_basic weights are Apache-2.0: https://huggingface.co/haoheliu/audiosr_basic
 """
 
 from __future__ import annotations
