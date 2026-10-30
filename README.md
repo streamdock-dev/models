@@ -21,6 +21,7 @@ downloaded without authentication.
 |---|---|
 | `models-1.0.0` | Upscaling, temporal upscaling, face restoration |
 | `rife-4.18.0` | RIFE frame-interpolation tiers, one per resolution |
+| `models-1.1.0` | Video denoising (FastDVDnet), selfie segmentation (MediaPipe) |
 
 They are split so RIFE can be re-versioned without re-uploading everything else.
 

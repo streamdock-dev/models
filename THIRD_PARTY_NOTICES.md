@@ -723,6 +723,63 @@ limitations under the License.
 
 ---
 
+## FastDVDnet
+
+Applies to: `fastdvdnet-sigma15.onnx`, `fastdvdnet-sigma25.onnx`, `fastdvdnet-sigma50.onnx`
+
+- **Project**: FastDVDnet: Towards Real-Time Deep Video Denoising Without Flow Estimation
+- **Authors**: Matias Tassano, Julie Delon, Thomas Veit
+- **Repository**: https://github.com/m-tassano/fastdvdnet
+- **Upstream checkpoint**: `model.pth`, committed in the repository (built from commit
+  `c8fdf6182a0340e89dd18f5df25b47337cbede6f`)
+- **Architecture source**: `models.py`, from a clone of the repository at export time and not
+  redistributed here
+- **Modification**: each ONNX file bakes in one fixed noise level (sigma 15, 25 or 50 on the
+  0-255 scale) in place of the model's noise-map input
+- **License**: MIT License
+
+```
+Copyright 2024 Matias Tassano mtassano@meta.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+---
+
+## MediaPipe Selfie Segmentation
+
+Applies to: `selfie-segmentation.onnx`
+
+- **Project**: MediaPipe Selfie Segmentation (SelfieSegmenter, square 256x256 variant)
+- **Authors**: Tingbo Hou, Karthik Raveendran (Google)
+- **Model card**: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Selfie%20Segmentation.pdf
+- **Upstream model**: `selfie_segmenter.tflite` (float16) from
+  https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite
+- **Modification**: converted from TFLite to ONNX with tf2onnx; MediaPipe's custom
+  `Convolution2DTransposeBias` op replaced with an equivalent ONNX `ConvTranspose`; input and
+  output renamed to `input` and `mask`
+- **License**: Apache License 2.0
+
+```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+---
+
 ## Export Scripts
 
 The export scripts (`export_esrgan_onnx.py`, `export_cugan_onnx.py`,

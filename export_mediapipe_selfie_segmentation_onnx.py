@@ -104,6 +104,80 @@ def convert_to_onnx(tflite_path: Path, onnx_path: Path) -> None:
     print("Conversion complete.")
 
 
+def replace_transpose_conv_bias(onnx_path: Path) -> None:
+    """Replaces MediaPipe's custom ``Convolution2DTransposeBias`` op with standard ONNX ops.
+
+    The selfie segmenter's final 2x upsample is a MediaPipe custom TFLite op that tf2onnx
+    can't map, so it passes through as an unrunnable ``TFL_Convolution2DTransposeBias`` node
+    (and onnx.checker rejects the model). The op is a transposed convolution plus bias --
+    stride 2, SAME padding, which for a 2x2 kernel means no padding at all. Its input is
+    always a Transpose of an NCHW tensor to NHWC (tf2onnx keeps NHWC at a custom op's
+    boundary), so this feeds that NCHW tensor straight into an ONNX ConvTranspose and
+    transposes the result back to NHWC under the custom op's output name. The weight
+    goes from TFLite's OHWI to ConvTranspose's (C_in, C_out, kH, kW).
+    """
+    if onnx is None:
+        sys.exit("ERROR: the onnx package is required: pip install onnx")
+    from onnx import helper, numpy_helper
+
+    model = onnx.load(str(onnx_path))
+    graph = model.graph
+    nodes = [n for n in graph.node if n.op_type == "TFL_Convolution2DTransposeBias"]
+    if not nodes:
+        return
+    init = {i.name: i for i in graph.initializer}
+    producers = {o: n for n in graph.node for o in n.output}
+
+    for node in nodes:
+        data, weight_name, bias_name = node.input
+        to_nhwc = producers[data]
+        if to_nhwc.op_type != "Transpose" or list(to_nhwc.attribute[0].ints) != [0, 2, 3, 1]:
+            sys.exit(f"ERROR: {node.name}'s input isn't an NCHW->NHWC Transpose; can't patch.")
+        nchw_input = to_nhwc.input[0]
+
+        weight = numpy_helper.to_array(init[weight_name]).transpose(3, 0, 1, 2).copy()
+        bias = numpy_helper.to_array(init[bias_name]).reshape(-1).copy()
+        kh, kw = weight.shape[2], weight.shape[3]
+        graph.initializer.append(numpy_helper.from_array(weight, f"{node.name}_W"))
+        graph.initializer.append(numpy_helper.from_array(bias, f"{node.name}_B"))
+
+        index = list(graph.node).index(node)
+        conv_out = f"{node.name}_nchw"
+        graph.node.remove(node)
+        graph.node.insert(
+            index,
+            helper.make_node(
+                "ConvTranspose",
+                [nchw_input, f"{node.name}_W", f"{node.name}_B"],
+                [conv_out],
+                name=f"{node.name}_convtranspose",
+                kernel_shape=[kh, kw],
+                strides=[2, 2],
+            ),
+        )
+        graph.node.insert(
+            index + 1,
+            helper.make_node(
+                "Transpose",
+                [conv_out],
+                list(node.output),
+                name=f"{node.name}_to_nhwc",
+                perm=[0, 2, 3, 1],
+            ),
+        )
+        print(f"Replaced {node.name} (Convolution2DTransposeBias) with ConvTranspose.")
+
+    # Drop the now-unused Transpose and the custom op's initializers.
+    used = {i for n in graph.node for i in n.input} | {o.name for o in graph.output}
+    for n in [n for n in graph.node if not any(o in used for o in n.output)]:
+        graph.node.remove(n)
+    used = {i for n in graph.node for i in n.input}
+    for i in [i for i in graph.initializer if i.name not in used]:
+        graph.initializer.remove(i)
+
+    onnx.save(model, str(onnx_path))
+
+
 def rename_io(onnx_path: Path) -> None:
     """Renames the model's sole input and sole mask output to "input"/"mask".
 
@@ -161,6 +235,7 @@ def export(out_dir: Path, landscape: bool) -> None:
 
     onnx_path = out_dir / "selfie-segmentation.onnx"
     convert_to_onnx(tflite_path, onnx_path)
+    replace_transpose_conv_bias(onnx_path)
     rename_io(onnx_path)
 
     print(f"Done: {onnx_path}")
