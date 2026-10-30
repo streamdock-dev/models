@@ -23,6 +23,7 @@ downloaded without authentication.
 | `rife-4.18.0` | RIFE frame-interpolation tiers, one per resolution |
 | `models-1.1.0` | Video denoising (FastDVDnet), selfie segmentation (MediaPipe) |
 | `models-1.2.0` | Music source separation (Demucs htdemucs_ft) |
+| `models-1.3.0` | Speech denoising (DeepFilterNet3, streaming) |
 
 They are split so RIFE can be re-versioned without re-uploading everything else.
 
