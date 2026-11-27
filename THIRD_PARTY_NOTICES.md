@@ -278,12 +278,10 @@ because the exported ONNX graph encodes the RRDBNet computation graph.
 ## Real-CUGAN
 
 Applies to: `up2x-latest-no-denoise.onnx`, `up2x-latest-conservative.onnx`,
-`up2x-latest-denoise2x.onnx`, `up2x-latest-denoise3x.onnx`
+`up2x-latest-denoise3x.onnx`
 
-All four are exported by `export_cugan_onnx.py` from bilibili/ailab's
-`updated_weights.zip` release. The separately-listed `waifu2x-cunet-*` files are a
-different project entirely (see the Waifu2x section below), despite Real-CUGAN's own
-architecture also being called UpCunet2x.
+All three are exported by `export_cugan_onnx.py` from bilibili/ailab's
+`updated_weights.zip` release.
 
 - **Project**: Real-CUGAN (Real Cascade U-Nets for Anime Image Super Resolution)
 - **Authors**: bilibili / ailab
@@ -333,47 +331,6 @@ Applies to: `rife/rife4.18_*.onnx`
 MIT License
 
 Copyright (c) 2021 HolyWu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
-
-## Waifu2x (nunif)
-
-Applies to: `waifu2x-cunet-scale2-noise0.onnx`, `waifu2x-cunet-scale2-noise1.onnx`,
-`waifu2x-cunet-scale2-noise2.onnx`, `waifu2x-cunet-scale2-noise3.onnx`
-
-- **Project**: nunif / waifu2x (CUNet art models)
-- **Author**: nagadomi
-- **Repository**: https://github.com/nagadomi/nunif
-- **Upstream checkpoints**: the `cunet/art` scale2x noise0-noise3 weights from
-  `waifu2x_pretrained_models_20250502.zip` in the
-  [nunif 0.0.0 release](https://github.com/nagadomi/nunif/releases/tag/0.0.0)
-- **Architecture source**: the CUNet architecture, fetched at export time from the nunif
-  repository and not redistributed here
-- **License**: MIT License
-
-```
-The MIT License
-
-Copyright (C) 2019-2023 nagadomi <https://github.com/nagadomi/>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -474,62 +431,6 @@ limitations under the License.
 
 ---
 
-## CodeFormer
-
-Applies to: `facerestore/CodeFormer.onnx`
-
-> **Non-commercial use only.** CodeFormer is released under the S-Lab License 1.0,
-> which restricts use to non-commercial research purposes. Do not include
-> `CodeFormer.onnx` in commercial products or services without explicit permission
-> from the authors (sczhou/CodeFormer).
-
-- **Project**: CodeFormer: Towards Robust Blind Face Restoration with Code Dictionary and Contrastive Regularization
-- **Authors**: Shangchen Zhou, Kelvin Chan, Chongyi Li, Chen Change Loy
-- **Repository**: https://github.com/sczhou/CodeFormer
-- **Upstream checkpoint**: `codeformer.pth` from the
-  [CodeFormer v0.1.0 release](https://github.com/sczhou/CodeFormer/releases/tag/v0.1.0)
-- **License**: S-Lab License 1.0 (non-commercial research use only)
-
-```
-S-Lab License 1.0
-
-Copyright 2022 S-Lab
-
-Redistribution and use for non-commercial purposes in source and
-binary forms, with or without modification, are permitted provided
-that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in
-   the documentation and/or other materials provided with the
-   distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived
-   from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-In the event that redistribution and/or use for commercial purposes
-are required, please contact the author for authorization.
-```
-
----
-
 ## YuNet Face Detection Model
 
 Applies to: `facedetect/face_detection_yunet_2023mar.onnx`
@@ -570,105 +471,18 @@ SOFTWARE.
 
 ---
 
-## BSRGAN
-
-Applies to: `bsrgan-x4.onnx`, `bsrgan-x2.onnx`
-
-- **Project**: BSRGAN: Designing a Practical Degradation Model for Deep Blind Image Super-Resolution
-- **Authors**: Kai Zhang, Jingyun Liang, Luc Van Gool, Radu Timofte
-- **Repository**: https://github.com/cszn/BSRGAN
-- **Upstream checkpoints**: `BSRGAN.pth` and `BSRGANx2.pth` from the
-  [BSRGAN v1.0 release](https://github.com/cszn/BSRGAN/releases/tag/v1.0)
-- **Architecture source**: `models/network_rrdbnet.py`, fetched at export time from the
-  BSRGAN repository and not redistributed here
-- **License**: Apache License 2.0
-
-```
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
----
-
-## SwinIR
-
-Applies to: `swinir-real-sr-x4.onnx`, `swinir-real-sr-x2.onnx`
-
-- **Project**: SwinIR: Image Restoration Using Swin Transformer
-- **Authors**: Jingyun Liang, Jiezhang Cao, Guolei Sun, Kai Zhang, Luc Van Gool, Radu Timofte
-- **Repository**: https://github.com/JingyunLiang/SwinIR
-- **Upstream checkpoints**: real-world SR weights from the
-  [SwinIR v0.0 release](https://github.com/JingyunLiang/SwinIR/releases/tag/v0.0)
-- **License**: Apache License 2.0
-- **Note**: SwinIR credits Swin Transformer and KAIR upstream; those projects carry
-  their own licenses.
-
-```
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
----
-
 ## HAT
 
-Applies to: `hat-real-sr-x4.onnx`, `hat-real-sr-x4-sharper.onnx`, `hat-sr-x2.onnx`
+Applies to: `hat-real-sr-x4-sharper.onnx`
 
 - **Project**: HAT: Activating More Pixels in Image Super-Resolution Transformer
 - **Authors**: Xiangyu Chen, Xintao Wang, Jiantao Zhou, Yu Qiao, Chao Dong
 - **Repository**: https://github.com/XPixelGroup/HAT
-- **Upstream checkpoints**: `Real_HAT_GAN_SRx4.pth`, `Real_HAT_GAN_sharper.pth` and
-  `HAT_SRx2.pth`, downloaded at export time from the authors' Google Drive release
+- **Upstream checkpoint**: `Real_HAT_GAN_sharper.pth`, downloaded at export time from the
+  authors' Google Drive release
 - **License**: Apache License 2.0
 
 ```
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
----
-
-## BasicVSR++
-
-Applies to: `basicvsrpp_x4_t5.onnx`, `basicvsrpp_x4_t10.onnx`
-
-- **Project**: BasicVSR++: Improving Video Super-Resolution with Enhanced Propagation and Alignment
-- **Authors**: Kelvin C.K. Chan, Shangchen Zhou, Xiangyu Xu, Chen Change Loy
-- **Repository**: https://github.com/ckkelvinchan/BasicVSR_PlusPlus
-- **Upstream checkpoint**: `basicvsr_plusplus_c64n7_8x1_600k_reds4_20210217-db622b2f.pth`
-  from the OpenMMLab model zoo (download.openmmlab.com)
-- **License**: Apache License 2.0
-
-```
-Copyright (c) MMEditing Authors. All rights reserved.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -686,7 +500,7 @@ limitations under the License.
 
 ## RealBasicVSR
 
-Applies to: `realbasicvsr_x4_t5.onnx`, `realbasicvsr_x4_t10.onnx`
+Applies to: `realbasicvsr_x4_t10.onnx`
 
 - **Project**: RealBasicVSR: Investigating Tradeoffs in Real-World Video Super-Resolution
 - **Authors**: Kelvin C.K. Chan, Shangchen Zhou, Xiangyu Xu, Chen Change Loy
@@ -715,7 +529,7 @@ limitations under the License.
 
 ## AnimeSR
 
-Applies to: `animevsr_x4_t5.onnx`, `animevsr_x4_t10.onnx`
+Applies to: `animevsr_x4_t10.onnx`
 
 - **Project**: AnimeSR: Learning Real-World Super-Resolution Models for Animation Videos
 - **Authors**: Yanze Wu, Xintao Wang, Gen Li, Ying Shan
@@ -912,41 +726,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-
-## RVRT
-
-Applies to: `vrt/rvrt_x4_t*.onnx` (user-built via export_rvrt_onnx.py)
-
-> **Non-commercial use only.** RVRT is released under the Creative Commons
-> Attribution-NonCommercial 4.0 International License (CC-BY-NC 4.0), which restricts use
-> to non-commercial research purposes. Do not use the weights or any derived ONNX files in
-> commercial products or services without explicit permission from the authors
-> (JingyunLiang/RVRT).
-
-- **Project**: Recurrent Video Restoration Transformer with Guided Deformable Attention (RVRT)
-- **Paper**: https://arxiv.org/abs/2206.02146
-- **Repository**: https://github.com/JingyunLiang/RVRT
-- **Upstream checkpoint**: `01_RVRT_videosr_bi_REDS_30frames.pth` from the
-  [RVRT v0.0 release](https://github.com/JingyunLiang/RVRT/releases/tag/v0.0)
-- **License**: Creative Commons Attribution-NonCommercial 4.0 International (CC-BY-NC 4.0)
-- **License URL**: https://creativecommons.org/licenses/by-nc/4.0/
-
-
-## EDVR
-
-Applies to: `edvr/edvr_m_x4.onnx`, `edvr/edvr_l_x4.onnx` (user-built via export_edvr_onnx.py)
-
-> **Non-commercial use only.** EDVR is released under the Creative Commons
-> Attribution-NonCommercial-ShareAlike 4.0 International License (CC-BY-NC-SA 4.0), which
-> restricts use to non-commercial research purposes. Do not use the weights or any derived
-> ONNX files in commercial products or services without explicit permission from the authors
-> (xinntao/EDVR).
-
-- **Project**: EDVR: Video Restoration with Enhanced Deformable Convolutional Networks
-- **Paper**: https://arxiv.org/abs/1905.02716
-- **Repository**: https://github.com/xinntao/EDVR
-- **Upstream checkpoints**: EDVR_M_x4_SR_REDS.pth, EDVR_L_x4_SR_REDS.pth downloaded at
-  export time via gdown from the EDVR Google Drive release
-- **License**: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC-BY-NC-SA 4.0)
-- **License URL**: https://creativecommons.org/licenses/by-nc-sa/4.0/

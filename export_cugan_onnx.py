@@ -2,7 +2,7 @@
 export_cugan_onnx.py -- Export Real-CUGAN weights to ONNX for use with CuganUpscaler.
 
 Usage:
-    python export_cugan_onnx.py [--out DIR] [--models all|no-denoise|conservative|denoise2x|denoise3x] [--no-simplify]
+    python export_cugan_onnx.py [--out DIR] [--models all|no-denoise|conservative|denoise3x] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -11,14 +11,14 @@ Requirements:
 The script will:
   1. Download the Real-CUGAN architecture (upcunet_v3.py) from the bilibili/ailab repo.
   2. Download the updated_weights.zip from the GitHub release (~35 MB) containing all 2x
-     denoise variants (no-denoise, conservative, denoise2x, denoise3x).
+     denoise variants; the three StreamDock uses are exported
+     (no-denoise, conservative, denoise3x).
   3. Wrap each selected model into a single-input [1, 3, H, W] -> [1, 3, H*2, W*2] module.
   4. Export to ONNX at 128x128 (the tile size used by CuganUpscaler), optionally simplified.
 
 Output files (default: ThirdParty/models/cugan/ relative to repo root):
     up2x-latest-no-denoise.onnx       2x scale, no denoising (noise level 0)
     up2x-latest-conservative.onnx     2x scale, conservative denoising (noise level 1)
-    up2x-latest-denoise2x.onnx        2x scale, moderate denoising (noise level 2)
     up2x-latest-denoise3x.onnx        2x scale, heavy denoising (noise level 3)
 
 CuganUpscaler usage:
@@ -62,7 +62,6 @@ TILE_SIZE = 128  # must match CuganUpscaler.TileSize
 _MODELS: dict[str, tuple[str, str]] = {
     "no-denoise":   ("updated_weights/up2x-latest-no-denoise.pth",   "up2x-latest-no-denoise.onnx"),
     "conservative": ("updated_weights/up2x-latest-conservative.pth", "up2x-latest-conservative.onnx"),
-    "denoise2x":    ("updated_weights/up2x-latest-denoise2x.pth",    "up2x-latest-denoise2x.onnx"),
     "denoise3x":    ("updated_weights/up2x-latest-denoise3x.pth",    "up2x-latest-denoise3x.onnx"),
 }
 

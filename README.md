@@ -2,7 +2,8 @@
 
 Open-source ONNX models used by [StreamDock](https://streamdock.net), re-exported from their
 upstream PyTorch checkpoints into the fixed input shapes the app's inference pipelines need,
-together with the scripts that produce them.
+together with the scripts that produce them. It covers only the models StreamDock's catalog
+actually uses.
 
 **The model files live in [Releases](../../releases), not in this repository.** Git is a poor
 fit for multi-hundred-megabyte binaries; GitHub release assets are not, and they can be
@@ -55,10 +56,9 @@ Apache-2.0 or MIT. Full per-model attribution, upstream checkpoint, and licence 
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Check it before redistributing anything from
 this repository.
 
-Some models StreamDock supports are **deliberately absent** because their licences forbid
-redistribution -- CodeFormer (S-Lab 1.0), RVRT (CC-BY-NC 4.0), EDVR (CC-BY-NC-SA 4.0) and
-Zero-DCE++ (CC-BY-NC 4.0) are all non-commercial. RobustVideoMatting is GPL-3.0, so it isn't
-published here either. Their export scripts are here, so you can build them yourself from upstream
-weights, but the built models will never be published in this repository's releases.
+RobustVideoMatting is GPL-3.0, so it is **deliberately absent** from the releases. Its export
+script is here, so you can build it yourself from upstream weights, but the built model will
+never be published in this repository's releases. Models under non-commercial licences are not
+covered by this repository at all.
 
-The export scripts themselves are MIT, © StreamDock Authors.
+The export scripts themselves are MIT, (c) StreamDock Authors.

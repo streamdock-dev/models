@@ -1,9 +1,9 @@
 """
-export_facerestore_onnx.py -- Export GFPGANv1.4 and CodeFormer to ONNX for use with
+export_facerestore_onnx.py -- Export GFPGANv1.4 to ONNX for use with
                               `FaceEnhancementFilter`.
 
 Usage:
-    python export_facerestore_onnx.py [--out DIR] [--models all|gfpgan|codeformer] [--no-simplify]
+    python export_facerestore_onnx.py [--out DIR] [--models all|gfpgan] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -11,12 +11,10 @@ Requirements:
 
 The script will:
   1. Download the GFPGAN v1.4 architecture from TencentARC/GFPGAN on GitHub.
-  2. Download the CodeFormer architecture from sczhou/CodeFormer on GitHub.
-  3. Download GFPGANv1.4.pth (~350 MB) and codeformer.pth (~350 MB) from the respective
-     GitHub releases.
-  4. Wrap each model so that normalisation (BGR pixel values in [0, 255] -> [-1, 1]) is
+  2. Download GFPGANv1.4.pth (~350 MB) from the GitHub release.
+  3. Wrap the model so that normalisation (BGR pixel values in [0, 255] -> [-1, 1]) is
      included inside the ONNX graph, matching the `FaceEnhancementFilter` contract exactly.
-  5. Export fixed-shape [1, 3, 512, 512] ONNX files, optionally simplified with onnxsim.
+  4. Export a fixed-shape [1, 3, 512, 512] ONNX file, optionally simplified with onnxsim.
 
 `FaceEnhancementFilter` restoration model contract (must match exactly):
   Input:  [1, 3, 512, 512] float32, BGR channels in [-1, 1] range
@@ -24,7 +22,6 @@ The script will:
 
 Output files (default: ThirdParty/models/facerestore/ relative to repo root):
     GFPGANv1.4.onnx       GFPGAN v1.4 face restoration (~350 MB)
-    CodeFormer.onnx        CodeFormer face restoration (~350 MB)
 """
 
 from __future__ import annotations
@@ -49,7 +46,7 @@ except ImportError:
 
 
 def _inject_basicsr_stubs() -> None:
-    """Inject minimal basicsr stubs so the GFPGAN/CodeFormer arch files can be
+    """Inject minimal basicsr stubs so the GFPGAN arch files can be
     loaded without the real basicsr package (which is broken on Python 3.13+).
     Only the symbols actually referenced by the arch files are stubbed out."""
 
@@ -97,7 +94,7 @@ def _inject_basicsr_stubs() -> None:
     _utils.registry = _utils_registry
     _utils.get_root_logger = _get_root_logger
 
-    # basicsr.archs (vqgan_arch will be inserted later via register_vqgan_in_basicsr)
+    # basicsr.archs
     _archs = types.ModuleType("basicsr.archs")
     _archs.arch_util = _archs_arch_util
 
@@ -119,11 +116,6 @@ _GFPGAN_ARCH_URL: str = "https://raw.githubusercontent.com/TencentARC/GFPGAN/mas
 _GFPGAN_STYLEGAN2_URL: str = "https://raw.githubusercontent.com/TencentARC/GFPGAN/master/gfpgan/archs/stylegan2_clean_arch.py"
 _GFPGAN_PTH_URL: str = (
     "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth"
-)
-_CODEFORMER_ARCH_URL: str = "https://raw.githubusercontent.com/sczhou/CodeFormer/master/basicsr/archs/codeformer_arch.py"
-_CODEFORMER_VECTOR_URL: str = "https://raw.githubusercontent.com/sczhou/CodeFormer/master/basicsr/archs/vqgan_arch.py"
-_CODEFORMER_PTH_URL: str = (
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth"
 )
 
 RESTORE_SIZE: int = 512
@@ -168,29 +160,6 @@ class GfpganWrapper(nn.Module):
         """Run GFPGAN and return the restored face tensor, discarding the auxiliary output."""
         output, _ = self.gfpgan(x, return_rgb=False)
         return output
-
-
-class CodeFormerWrapper(nn.Module):
-    """
-    Wraps CodeFormer so the ONNX graph consumes [1, 3, 512, 512] BGR float32
-    in the [-1, 1] range and produces output in the same range.
-
-    CodeFormer.forward(x, w) -- w is the fidelity weight in [0, 1].
-    We bake w=1.0 (maximum fidelity) into the graph at export time.
-    """
-
-    def __init__(self, codeformer: nn.Module) -> None:
-        """Wrap a CodeFormer instance with fidelity weight baked in at w=1.0."""
-        super().__init__()
-        self.codeformer = codeformer
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Run CodeFormer at maximum fidelity (w=1.0) and return the restored face tensor."""
-        # Pass w as a Python float so `if w > 0:` in CodeFormer.forward
-        # is resolved as a static True at trace time, avoiding a
-        # data-dependent guard error during torch.export.
-        out = self.codeformer(x, w=1.0, adain=True)
-        return out["x_rec"] if isinstance(out, dict) else out
 
 
 def export_gfpgan(tmp: Path, out_dir: Path, simplify: bool) -> None:
@@ -243,47 +212,6 @@ def export_gfpgan(tmp: Path, out_dir: Path, simplify: bool) -> None:
     net.eval()
 
     model = GfpganWrapper(net)
-
-    dummy = torch.zeros(1, 3, RESTORE_SIZE, RESTORE_SIZE)
-    _export(model, dummy, out_path, simplify, input_name="input", output_name="output")
-
-
-def export_codeformer(tmp: Path, out_dir: Path, simplify: bool) -> None:
-    """Download CodeFormer weights, build the ONNX wrapper, and write CodeFormer.onnx to out_dir."""
-    print("\n[CodeFormer]")
-    arch_path = tmp / "codeformer_arch.py"
-    vqgan_path = tmp / "vqgan_arch.py"
-    pth_path = tmp / "codeformer.pth"
-    out_path = out_dir / "CodeFormer.onnx"
-
-    if out_path.exists():
-        print("  [skip] CodeFormer.onnx already exists.")
-        return
-
-    download(_CODEFORMER_ARCH_URL, arch_path, "codeformer_arch.py")
-    download(_CODEFORMER_VECTOR_URL, vqgan_path, "vqgan_arch.py")
-    download(_CODEFORMER_PTH_URL, pth_path, "codeformer.pth")
-
-    vqgan_module = load_module_from_file("vqgan_arch", vqgan_path)
-    # codeformer_arch.py does `from basicsr.archs.vqgan_arch import *`
-    # so we must expose the already-loaded module under that path too.
-    sys.modules["basicsr.archs.vqgan_arch"] = vqgan_module
-    arch_module = load_module_from_file("codeformer_arch", arch_path)
-
-    net = arch_module.CodeFormer(
-        dim_embd=512,
-        codebook_size=1024,
-        n_head=8,
-        n_layers=9,
-        connect_list=["32", "64", "128", "256"],
-    )
-
-    state = torch.load(pth_path, map_location="cpu")
-    params = state.get("params_ema") or state.get("params") or state
-    net.load_state_dict(params, strict=False)
-    net.eval()
-
-    model = CodeFormerWrapper(net)
 
     dummy = torch.zeros(1, 3, RESTORE_SIZE, RESTORE_SIZE)
     _export(model, dummy, out_path, simplify, input_name="input", output_name="output")
@@ -343,7 +271,7 @@ def main() -> None:
     parser.add_argument(
         "--models",
         default="all",
-        choices=["all", "gfpgan", "codeformer"],
+        choices=["all", "gfpgan"],
         help="Which models to export (default: all)",
     )
     parser.add_argument(
@@ -373,9 +301,6 @@ def main() -> None:
 
     if args.models in ("all", "gfpgan"):
         export_gfpgan(tmp, out_dir, simplify)
-
-    if args.models in ("all", "codeformer"):
-        export_codeformer(tmp, out_dir, simplify)
 
     print(
         "\nDone. Place the output .onnx files in ThirdParty/models/facerestore/ "

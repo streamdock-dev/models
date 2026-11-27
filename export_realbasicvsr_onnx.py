@@ -3,7 +3,7 @@ export_realbasicvsr_onnx.py -- Export RealBasicVSR to ONNX for offline video ups
 in StreamDock's batch processing queue.
 
 Usage:
-    py export_realbasicvsr_onnx.py [--out DIR] [--seq-lens 5 10] [--tile-size 256] [--no-simplify]
+    py export_realbasicvsr_onnx.py [--out DIR] [--seq-lens 10] [--tile-size 256] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -17,7 +17,6 @@ The script:
   4. Optionally simplifies with onnxsim.
 
 Output files (default: ThirdParty/models/realbasicvsr/):
-    realbasicvsr_x4_t5.onnx    5-frame input sequence, 256x256 tiles, 4x upscale
     realbasicvsr_x4_t10.onnx  10-frame input sequence, 256x256 tiles, 4x upscale
 
 Input tensor shape:  (1, T, 3, tile_h, tile_w)  -- T RGB frames, normalised [0, 1], float32
@@ -73,7 +72,7 @@ _N_CLEAN = 20  # num_cleaning_blocks in the image-cleaning head
 
 # Export defaults.
 _TILE_SIZE = 256          # pixels -- must be a multiple of 32 for SPyNet padding no-op
-_DEFAULT_SEQ_LENS = [5, 10]
+_DEFAULT_SEQ_LENS = [10]  # StreamDock uses T10 only
 _OPSET = 18
 
 
@@ -576,7 +575,7 @@ def main() -> None:
         nargs="+",
         type=int,
         default=_DEFAULT_SEQ_LENS,
-        help="Sequence lengths T to export. Default: 5 10.",
+        help="Sequence lengths T to export. Default: 10.",
     )
     parser.add_argument(
         "--tile-size",

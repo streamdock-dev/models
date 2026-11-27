@@ -3,7 +3,7 @@ export_animevsr_onnx.py -- Export AnimeSR to ONNX for offline video upscaling
 in StreamDock's batch processing queue.
 
 Usage:
-    py export_animevsr_onnx.py [--out DIR] [--seq-lens 5 10] [--tile-size 256] [--no-simplify]
+    py export_animevsr_onnx.py [--out DIR] [--seq-lens 10] [--tile-size 256] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -17,7 +17,6 @@ The script:
   5. Runs a CPU inference sanity-check via onnxruntime.
 
 Output files (default: ThirdParty/models/realbasicvsr/):
-    animevsr_x4_t5.onnx    5-frame input sequence, 256x256 tiles, 4x upscale
     animevsr_x4_t10.onnx  10-frame input sequence, 256x256 tiles, 4x upscale
 
 NOTE: AnimeSR output files are placed in the realbasicvsr/ subfolder because they
@@ -86,7 +85,7 @@ _NETSCALE = 4
 
 # Export defaults.
 _TILE_SIZE = 256
-_DEFAULT_SEQ_LENS = [5, 10]
+_DEFAULT_SEQ_LENS = [10]  # StreamDock uses T10 only
 _OPSET = 18
 
 
@@ -413,7 +412,7 @@ def main() -> None:
         nargs="+",
         type=int,
         default=_DEFAULT_SEQ_LENS,
-        help="Sequence lengths T to export. Default: 5 10.",
+        help="Sequence lengths T to export. Default: 10.",
     )
     parser.add_argument(
         "--tile-size",

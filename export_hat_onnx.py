@@ -1,9 +1,9 @@
 """
-export_hat_onnx.py -- Export HAT (Hybrid Attention Transformer) real-world SR weights to ONNX
-for use with HatUpscaler.
+export_hat_onnx.py -- Export the HAT (Hybrid Attention Transformer) real-world SR "sharper"
+weights to ONNX for use with HatUpscaler.
 
 Usage:
-    python export_hat_onnx.py [--out DIR] [--models all|x4|x4sharper] [--no-simplify]
+    python export_hat_onnx.py [--out DIR] [--models all|x4sharper] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -13,26 +13,24 @@ Weights:
     HAT real-world SR weights are hosted on Google Drive (Apache 2.0 license):
     https://drive.google.com/drive/folders/1HpmReFfoUqUbnAOQ7rvOeNU3uf_m69w0
 
-    The script will attempt to download the selected .pth files automatically using gdown.
+    The script will attempt to download the .pth file automatically using gdown.
     If the automatic download fails (e.g. due to download limits), manually download the
     file from the Google Drive folder above and place it in:
-        <out>/_hat_export_tmp/Real_HAT_GAN_SRx4.pth     (for --models x4)
-        <out>/_hat_export_tmp/Real_HAT_GAN_SRx4_sharper.pth  (for --models x4sharper)
+        <out>/_hat_export_tmp/Real_HAT_GAN_sharper.pth
     Then re-run the script -- it will skip the download and use the local file.
 
 The script will:
   1. Download hat_arch.py from XPixelGroup/HAT on GitHub.
   2. Patch out the basicsr registry decorator and provide lightweight stubs for
      to_2tuple and trunc_normal_ so the full basicsr package is not required.
-  3. Download the selected real-world SR weights (via gdown from Google Drive).
+  3. Download the real-world SR "sharper" weights (via gdown from Google Drive).
   4. Precompute the attention mask for the fixed tile size and patch forward_features
      to use the baked-in mask, eliminating dynamic x_size-dependent tensor creation.
   5. Export to ONNX at the fixed tile size with a batch dynamic axis.
   6. Optionally simplify with onnxsim and sanity-check via CPUExecutionProvider.
 
 Output files (default: ThirdParty/models/hat/ relative to repo root):
-    hat-real-sr-x4.onnx          4x real-world SR (Real_HAT_GAN_SRx4, balanced quality)
-    hat-real-sr-x4-sharper.onnx  4x real-world SR (Real_HAT_GAN_SRx4_sharper, higher perceptual quality)
+    hat-real-sr-x4-sharper.onnx  4x real-world SR (Real_HAT_GAN_sharper, higher perceptual quality)
 
 HatUpscaler usage:
     Models are discovered automatically by ModelCatalog.DiscoverForPipeline(Hat).
@@ -97,50 +95,6 @@ TILE_SIZE = 64
 # Google Drive file IDs are resolved from the shared folder at runtime via gdown folder listing.
 # If the IDs below are stale, use manual download as documented in the module docstring.
 _MODELS: dict[str, tuple[str, str, dict[str, Any]]] = {
-    "x2": (
-        "HAT_SRx2.pth",
-        "hat-sr-x2.onnx",
-        {
-            "upscale": 2,
-            "in_chans": 3,
-            "img_size": 64,
-            "window_size": 16,
-            "compress_ratio": 3,
-            "squeeze_factor": 30,
-            "conv_scale": 0.01,
-            "overlap_ratio": 0.5,
-            "img_range": 1.0,
-            "depths": [6, 6, 6, 6, 6, 6],
-            "embed_dim": 180,
-            "num_heads": [6, 6, 6, 6, 6, 6],
-            "mlp_ratio": 2,
-            "upsampler": "pixelshuffle",
-            "resi_connection": "1conv",
-            "num_feat": 64,
-        },
-    ),
-    "x4": (
-        "Real_HAT_GAN_SRx4.pth",
-        "hat-real-sr-x4.onnx",
-        {
-            "upscale": 4,
-            "in_chans": 3,
-            "img_size": 64,
-            "window_size": 16,
-            "compress_ratio": 3,
-            "squeeze_factor": 30,
-            "conv_scale": 0.01,
-            "overlap_ratio": 0.5,
-            "img_range": 1.0,
-            "depths": [6, 6, 6, 6, 6, 6],
-            "embed_dim": 180,
-            "num_heads": [6, 6, 6, 6, 6, 6],
-            "mlp_ratio": 2,
-            "upsampler": "pixelshuffle",
-            "resi_connection": "1conv",
-            "num_feat": 64,
-        },
-    ),
     "x4sharper": (
         "Real_HAT_GAN_sharper.pth",
         "hat-real-sr-x4-sharper.onnx",
@@ -475,10 +429,10 @@ def main() -> None:
     )
     parser.add_argument(
         "--models",
-        default="x2,x4",
+        default="all",
         help=(
-            "Comma-separated model keys to export: x2, x4, x4sharper, all "
-            "(default: x2,x4)"
+            "Comma-separated model keys to export: x4sharper, all "
+            "(default: all)"
         ),
     )
     parser.add_argument(

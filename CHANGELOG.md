@@ -24,50 +24,49 @@ All notable changes to this release package are documented here.
   denoising (noise level 1 -- conservative). Derived from `up2x-latest-conservative.pth`
   (bilibili/ailab updated_weights release). Same architecture as no-denoise; denoising is
   fully encoded in the trained weights.
-- `cugan/up2x-latest-denoise2x.onnx` -- Real-CUGAN UpCunet2x 2x, moderate in-model
-  denoising (noise level 2). Derived from `up2x-latest-denoise2x.pth`.
 - `cugan/up2x-latest-denoise3x.onnx` -- Real-CUGAN UpCunet2x 2x, heavy in-model
   denoising (noise level 3). Derived from `up2x-latest-denoise3x.pth`.
-- `hat/hat-real-sr-x4.onnx` -- HAT 4x real-world SR (balanced quality). Derived from
-  `Real_HAT_GAN_SRx4.pth` (XPixelGroup/HAT, Apache 2.0). Tile size 64x64 (window_size=16
-  constraint). Attention mask and relative position index buffers are baked in at export
-  time; forward_features patched to eliminate dynamic control flow.
 - `hat/hat-real-sr-x4-sharper.onnx` -- HAT 4x real-world SR (higher perceptual sharpness).
   Derived from `Real_HAT_GAN_sharper.pth` (XPixelGroup/HAT, Apache 2.0).
-- `hat/hat-sr-x2.onnx` -- HAT 2x classical SR. Derived from `HAT_SRx2.pth`
-  (XPixelGroup/HAT, Apache 2.0).
-- `swinir/swinir-real-sr-x2.onnx` -- SwinIR-M 2x real-world SR. Derived from
-  `003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.pth` (JingyunLiang/SwinIR v0.0,
-  Apache 2.0). Tile size 128x128.
-- `swinir/swinir-real-sr-x4.onnx` -- SwinIR-L 4x real-world SR (larger model, deeper
-  depths/wider embedding). Derived from
-  `003_realSR_BSRGAN_DFOWMFC_s64w8_SwinIR-L_x4_GAN.pth` (JingyunLiang/SwinIR v0.0,
-  Apache 2.0). Tile size 128x128.
-- `waifu2x/waifu2x-cunet-scale2-noise0.onnx` -- Waifu2x CUNet 2x, no denoising.
-  Derived from `pretrained_models/cunet/art/noise0_scale2x.pth`
-  (nagadomi/nunif releases, MIT). Tile size 128x128.
-- `waifu2x/waifu2x-cunet-scale2-noise1.onnx` -- Waifu2x CUNet 2x, light denoising.
-  Derived from `noise1_scale2x.pth`.
-- `waifu2x/waifu2x-cunet-scale2-noise2.onnx` -- Waifu2x CUNet 2x, moderate denoising.
-  Derived from `noise2_scale2x.pth`.
-- `waifu2x/waifu2x-cunet-scale2-noise3.onnx` -- Waifu2x CUNet 2x, heavy denoising.
-  Derived from `noise3_scale2x.pth`.
-- `export_hat_onnx.py` -- Exports HAT real-world SR models. Downloads architecture from
+- `export_hat_onnx.py` -- Exports the HAT real-world SR sharper model. Downloads architecture from
   GitHub and weights from Google Drive via gdown. Patches forward_features to use
   precomputed attention buffers, eliminating dynamic control flow at ONNX trace time.
-- `export_swinir_onnx.py` -- Exports SwinIR-M (x2) and SwinIR-L (x4) real-world SR
-  models. Downloads architecture and weights from JingyunLiang/SwinIR GitHub releases.
-- `export_waifu2x_onnx.py` -- Exports Waifu2x CUNet scale2 noise0-noise3 models.
-  Downloads architecture from nagadomi/nunif and weights from the nunif pretrained
-  models zip (437 MB, cached on first run).
 
 ### Changed
 
-- All export scripts (`export_hat_onnx.py`, `export_swinir_onnx.py`,
-  `export_waifu2x_onnx.py`, `export_cugan_onnx.py`, `export_esrgan_onnx.py`,
-  `export_bsrgan_onnx.py`) now delete the `_*_export_tmp/` scratch directory
+- The upscaling export scripts (`export_hat_onnx.py`, `export_cugan_onnx.py`,
+  `export_esrgan_onnx.py`) now delete the `_*_export_tmp/` scratch directory
   (downloaded weights + arch source) automatically after a successful export. Pass
   `--keep-tmp` to retain the directory.
+
+### Removed
+
+This repository now covers only the models StreamDock's catalog uses. The files below are no
+longer built or documented here; already-published copies remain only in the older
+`models-1.0.0` release until those assets are deleted.
+
+Redundant with kept models:
+
+- Waifu2x CUNet scale2 noise0-noise3 (`waifu2x/waifu2x-cunet-scale2-noise*.onnx`) and
+  `export_waifu2x_onnx.py` -- Real-CUGAN and Real-ESRGAN animevideov3 cover anime upscaling.
+- SwinIR real-world SR x2/x4 (`swinir/swinir-real-sr-*.onnx`) and `export_swinir_onnx.py`.
+- BSRGAN x2/x4 (`bsrgan/bsrgan-*.onnx`) and `export_bsrgan_onnx.py`.
+- HAT classical x2 (`hat/hat-sr-x2.onnx`) and plain HAT real-world x4
+  (`hat/hat-real-sr-x4.onnx`). `export_hat_onnx.py` stays and now exports only
+  `hat-real-sr-x4-sharper.onnx`.
+- BasicVSR++ (`export_basicvsrpp_onnx.py`).
+- Real-CUGAN `up2x-latest-denoise2x.onnx`; `export_cugan_onnx.py` keeps no-denoise,
+  conservative and denoise3x.
+- RealBasicVSR and AnimeSR T5 builds (`realbasicvsr_x4_t5.onnx`, `animevsr_x4_t5.onnx`).
+  `export_realbasicvsr_onnx.py` and `export_animevsr_onnx.py` now default to T10 only.
+
+Non-commercial licences:
+
+- CodeFormer (`facerestore/CodeFormer.onnx`, S-Lab License 1.0); `export_facerestore_onnx.py`
+  now exports GFPGANv1.4 only.
+- RVRT (`export_rvrt_onnx.py`, CC-BY-NC 4.0).
+- EDVR (`export_edvr_onnx.py`, CC-BY-NC-SA 4.0).
+- Zero-DCE++ (`export_zerodce_onnx.py`, CC-BY-NC 4.0).
 
 ---
 
