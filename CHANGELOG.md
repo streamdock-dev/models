@@ -8,6 +8,18 @@ All notable changes to this release package are documented here.
 
 ### Added
 
+- `rife425.onnx` -- RIFE 4.25 frame interpolator, one model for every resolution (dynamic
+  height/width; pads to a multiple of 64 inside the graph and crops back), with the same
+  `img0`/`img1`/`timestep`/`output` interface as before. Derived from `flownet_v4.25.pkl`
+  (HolyWu/vs-rife model release, byte-identical to hzwer/Practical-RIFE's 4.25 weights);
+  MIT (Practical-RIFE, Copyright (c) 2021 hzwer; vs-rife, Copyright (c) 2021 HolyWu). Built
+  with the new `export_rife425_onnx.py`.
+- `hvi-cidnet.onnx` -- HVI-CIDNet low-light enhancement (CVPR 2025), any resolution
+  (reflect-pads to a multiple of 8 inside the graph; run on the whole frame, not in tiles).
+  Derived from the Generalization checkpoint (Fediory/HVI-CIDNet-Generalization on Hugging
+  Face, trained on LOLv2-Synthetic); MIT, Copyright (c) 2024 Fediory Feng. Built with the new
+  `export_hvicidnet_onnx.py`.
+
 - `rfdetr-nano.onnx`, `rfdetr-small.onnx`, `rfdetr-medium.onnx` -- Roboflow RF-DETR COCO
   object detectors (Apache-2.0), replacing YOLO11 (AGPL-3.0) in StreamDock. Static input
   384/512/576, outputs `dets` [1,300,4] and `labels` [1,300,91], no NMS. Built with
@@ -67,6 +79,13 @@ Non-commercial licences:
 - RVRT (`export_rvrt_onnx.py`, CC-BY-NC 4.0).
 - EDVR (`export_edvr_onnx.py`, CC-BY-NC-SA 4.0).
 - Zero-DCE++ (`export_zerodce_onnx.py`, CC-BY-NC 4.0).
+
+Superseded:
+
+- The RIFE 4.18 fixed-resolution tiers (`rife/rife4.18_*.onnx`, ten files) and
+  `export_rife_onnx.py`, and `rife47.onnx` (fixed-midpoint fallback) and
+  `export_rife47_onnx.py` -- replaced by the single any-size `rife425.onnx`. Already-published
+  copies remain in the older releases until those assets are deleted.
 
 ---
 

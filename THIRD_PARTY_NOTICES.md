@@ -316,16 +316,55 @@ SOFTWARE.
 
 ---
 
-## RIFE 4.18 (vs-rife)
+## RIFE 4.25 (Practical-RIFE, vs-rife)
 
-Applies to: `rife/rife4.18_*.onnx`
+Applies to: `rife425.onnx`
 
-- **Project**: vs-rife -- VapourSynth plugin for RIFE
-- **Author**: HolyWu
-- **Repository**: https://github.com/HolyWu/vs-rife
-- **Upstream checkpoint**: `flownet_v4.18.pkl` from the
-  [vs-rife model release](https://github.com/HolyWu/vs-rife/releases/tag/model)
-- **License**: MIT License
+- **Project**: Practical-RIFE / RIFE: Real-Time Intermediate Flow Estimation for Video
+  Frame Interpolation
+- **Authors**: Zhewei Huang, Tianyuan Zhang, Wen Heng, Boxin Shi, Shuchang Zhou
+- **Repository**: https://github.com/hzwer/Practical-RIFE
+- **Architecture source**: `IFNet_HDv3_v4_25.py` and `warplayer.py` from
+  https://github.com/HolyWu/vs-rife (pinned commit in `export_rife425_onnx.py`)
+- **Upstream checkpoint**: `flownet_v4.25.pkl` from the
+  [vs-rife model release](https://github.com/HolyWu/vs-rife/releases/tag/model),
+  byte-identical to `train_log/flownet.pkl` in the 4.25 release linked from the
+  Practical-RIFE README
+- **License**: MIT License, both projects. Practical-RIFE's README ("Trained Model") places
+  the trained weights under the same MIT licence as its code:
+  https://github.com/hzwer/Practical-RIFE/blob/main/LICENSE and
+  https://github.com/HolyWu/vs-rife/blob/master/LICENSE
+
+The ONNX file is converted with `export_rife425_onnx.py`; the conversion does not change the
+weights. It adds shape-derived warp-grid construction and padding around the network.
+
+Practical-RIFE:
+
+```
+MIT License
+
+Copyright (c) 2021 hzwer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+vs-rife:
 
 ```
 MIT License
@@ -353,33 +392,39 @@ SOFTWARE.
 
 ---
 
-## RIFE 4.7 (Practical-RIFE)
+## HVI-CIDNet
 
-Applies to: `rife47.onnx`
+Applies to: `hvi-cidnet.onnx`
 
-- **Project**: Practical-RIFE / RIFE: Real-Time Intermediate Flow Estimation for Video
-  Frame Interpolation
-- **Authors**: Zhewei Huang, Tianyuan Zhang, Wen Heng, Boxin Shi, Shuchang Zhou
-- **Repository**: https://github.com/hzwer/Practical-RIFE
-- **Upstream weights**: RIFE 4.7 flownet weights, released by the authors under the same
-  MIT licence as the project itself
-- **ONNX conversion**: `rife47_ensemble_True_scale_1_sim.onnx` from the community
-  redistribution at https://huggingface.co/yuvraj108c/rife-onnx
-- **License**: MIT License (per the upstream RIFE project)
+- **Project**: HVI-CIDNet: "HVI: A New Color Space for Low-light Image Enhancement"
+  (CVPR 2025)
+- **Authors**: Qingsen Yan, Yixu Feng, Cheng Zhang, Guansong Pang, Kangbiao Shi, Peng Wu,
+  Wei Dong, Jinqiu Sun, Yanning Zhang
+- **Repository**: https://github.com/Fediory/HVI-CIDNet
+- **Upstream checkpoint**: `model.safetensors` from
+  https://huggingface.co/Fediory/HVI-CIDNet-Generalization (model card: `license: mit`;
+  pinned revision in `export_hvicidnet_onnx.py`)
+- **License**: MIT License (code: https://github.com/Fediory/HVI-CIDNet/blob/master/LICENSE;
+  weights: the model card's MIT licence)
 
-> Unlike every other model published here, this file is a third-party ONNX conversion
-> rather than one produced by this project's own `export_*_onnx.py` scripts. The
-> conversion repository declares no licence of its own; the MIT grant above comes from
-> the upstream RIFE weights it was converted from, which is what governs redistribution.
-> It is kept because it is the only RIFE export with dynamic height/width axes, making it
-> the resolution-independent fallback when no fixed-resolution rife4.18 tier matches a
-> stream. Replacing it with a self-built equivalent requires adding dynamic-axes support
-> to `export_rife_onnx.py`, which currently exports fixed shapes only.
+The ONNX file is converted with `export_hvicidnet_onnx.py`; the conversion does not change the
+weights. It replaces a few colour-space and attention methods with export-friendly equivalents
+that compute the same values, and adds padding and cropping around the network.
+
+**Training data.** The Generalization checkpoint was trained on LOLv2-Synthetic, whose images
+are derived from the RAISE raw image dataset. RAISE asks that all documents and papers
+reporting results based on it include this reference:
+
+> D.-T. Dang-Nguyen, C. Pasquini, V. Conotter, G. Boato, RAISE - A Raw Images Dataset for
+> Digital Image Forensics, ACM Multimedia Systems, Portland, Oregon, March 18-20, 2015
+> (http://loki.disi.unitn.it/RAISE/)
+
+The datasets carry their own terms; the MIT grant above covers the weights as published.
 
 ```
 MIT License
 
-Copyright (c) 2021 hzwer
+Copyright (c) 2024 Fediory Feng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -699,9 +744,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Export Scripts
 
-The export scripts (`export_esrgan_onnx.py`, `export_cugan_onnx.py`,
-`export_rife_onnx.py`, `export_facerestore_onnx.py`, `patch_esrgan_resize.py`) are
-original work by the StreamDock authors and are released under the MIT License.
+The export scripts (`export_*_onnx.py`, `patch_esrgan_resize.py`) are original work by
+the StreamDock authors and are released under the MIT License.
 
 ```
 MIT License

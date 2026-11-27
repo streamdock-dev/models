@@ -1,7 +1,7 @@
 # StreamDock Models
 
 Open-source ONNX models used by [StreamDock](https://streamdock.net), re-exported from their
-upstream PyTorch checkpoints into the fixed input shapes the app's inference pipelines need,
+upstream PyTorch checkpoints into the input shapes the app's inference pipelines need,
 together with the scripts that produce them. It covers only the models StreamDock's catalog
 actually uses.
 
@@ -15,18 +15,19 @@ downloaded without authentication.
 |---|---|
 | [Releases](../../releases) | the models themselves |
 | `export_*_onnx.py` | one script per model family, building the ONNX from upstream weights |
-| [BUILDING.md](BUILDING.md) | per-model detail: architectures, tiers, upstream checkpoints |
+| [BUILDING.md](BUILDING.md) | per-model detail: architectures, tensor interfaces, upstream checkpoints |
 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | per-model attribution and licence text |
 
 | Release | Contents |
 |---|---|
 | `models-1.0.0` | Upscaling, temporal upscaling, face restoration |
-| `rife-4.18.0` | RIFE frame-interpolation tiers, one per resolution |
 | `models-1.1.0` | Video denoising (FastDVDnet), selfie segmentation (MediaPipe) |
 | `models-1.2.0` | Music source separation (Demucs htdemucs_ft) |
 | `models-1.3.0` | Speech denoising (DeepFilterNet3, streaming) |
 
-They are split so RIFE can be re-versioned without re-uploading everything else.
+Frame interpolation is one any-size RIFE 4.25 model (`rife425.onnx`) and low-light
+enhancement is HVI-CIDNet (`hvi-cidnet.onnx`); both are exported by the scripts here and
+described in [BUILDING.md](BUILDING.md).
 
 StreamDock downloads these on demand through its in-app Model Manager, matching each file
 against a SHA-256 recorded in the app's own catalog. Nothing here is bundled into the
@@ -35,9 +36,10 @@ installer.
 ## Why re-export at all
 
 Most upstream projects publish PyTorch checkpoints rather than ONNX, and the ones that do
-publish ONNX rarely publish the fixed input shapes a real-time pipeline needs. Each export
-script downloads the upstream checkpoint, rebuilds the architecture, traces it at a specific
-shape, and simplifies the resulting graph.
+publish ONNX rarely publish the input shapes a real-time pipeline needs. Each export
+script downloads the upstream checkpoint, rebuilds the architecture, traces it (at a fixed
+shape, or with dynamic height and width where the graph allows it), and simplifies the
+resulting graph.
 
 ```
 pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.2,<2.6"

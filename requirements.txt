@@ -19,5 +19,8 @@ onnxruntime>=1.18
 # Used by export_esrgan_onnx.py, export_facerestore_onnx.py, patch_esrgan_resize.py
 numpy>=1.24
 
+# Used by export_hvicidnet_onnx.py (the checkpoint is a .safetensors file)
+safetensors>=0.4
+
 # Optional: graph simplification pass in all export scripts
 onnxsim>=0.4
