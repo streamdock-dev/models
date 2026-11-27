@@ -8,6 +8,11 @@ All notable changes to this release package are documented here.
 
 ### Added
 
+- `rfdetr-nano.onnx`, `rfdetr-small.onnx`, `rfdetr-medium.onnx` -- Roboflow RF-DETR COCO
+  object detectors (Apache-2.0), replacing YOLO11 (AGPL-3.0) in StreamDock. Static input
+  384/512/576, outputs `dets` [1,300,4] and `labels` [1,300,91], no NMS. Built with
+  `export_rfdetr_onnx.py`; outputs match rfdetr's own predict().
+
 - `realesr-general-x4v3.onnx` -- Real-ESRGAN Compact (SRVGGNetCompact, 32 conv) 4x for
   general live-action video: a light model (about 5 MB) for real-time use, against 67 MB
   for `realesrgan-x4plus`. Derived from `realesr-general-x4v3.pth` (xinntao/Real-ESRGAN

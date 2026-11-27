@@ -6,6 +6,24 @@ notices and license texts are reproduced below as required by each license.
 
 ---
 
+## RF-DETR
+
+Applies to: `rfdetr-nano.onnx`, `rfdetr-small.onnx`, `rfdetr-medium.onnx`
+
+- **Project**: RF-DETR: real-time object detection (Roboflow)
+- **Repository**: https://github.com/roboflow/rf-detr
+- **License**: Apache License 2.0 (code, and the Nano/Small/Medium/Large detection weights;
+  see https://github.com/roboflow/rf-detr#license and the model cards at
+  https://huggingface.co/Roboflow/rf-detr-nano, `rf-detr-small`, `rf-detr-medium`)
+
+Copyright 2025 Roboflow, Inc. Licensed under the Apache License, Version 2.0; you may not use
+these files except in compliance with the License. A copy is at
+http://www.apache.org/licenses/LICENSE-2.0. Distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND. The ONNX files are converted from the COCO checkpoints
+with `export_rfdetr_onnx.py` (rfdetr 1.12.1); the conversion does not change the weights.
+
+---
+
 ## Real-ESRGAN
 
 Applies to: `realesrgan-x4plus.onnx`, `realesrgan-x2plus.onnx`,
