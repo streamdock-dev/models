@@ -8,6 +8,9 @@
 # because the default PyPI torch package bundles CUDA (~2 GB).
 # Pinned to <2.6 because torch 2.6+ changed torch.onnx.export to always use
 # the dynamo-based exporter, which has compatibility issues with some models.
+# export_rife425_onnx.py and export_hvicidnet_onnx.py pass dynamo=False and were
+# built with newer torch (versions in BUILDING.md); to reproduce their published
+# files byte for byte, use those versions in a separate environment.
 #
 # onnxsim is optional: the export scripts will skip the simplification pass
 # if it is not installed, but the resulting models will still be valid.
