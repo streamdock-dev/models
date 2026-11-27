@@ -30,6 +30,8 @@ and attribution details.
 |------|-------------|:-----:|--------------|-----------------|
 | `realesrgan-x4plus.onnx` | 4x general-purpose upscaler for live-action / photographic content | 4x | RRDBNet (23 blocks) | [xinntao/Real-ESRGAN v0.1.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.1.0) |
 | `realesrgan-x2plus.onnx` | 2x balanced general-purpose upscaler | 2x | RRDBNet (23 blocks) | [xinntao/Real-ESRGAN v0.2.1](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.1) |
+| `realesr-general-x4v3.onnx` | 4x light general-purpose upscaler for live-action video, real-time capable | 4x | SRVGGNetCompact (32 conv) | [xinntao/Real-ESRGAN v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
+| `realesr-general-wdn-x4v3.onnx` | As above, stronger denoising (less fine texture) | 4x | SRVGGNetCompact (32 conv) | [xinntao/Real-ESRGAN v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
 | `realesr-animevideov3.onnx` | 4x optimised for anime and cel animation | 4x | SRVGGNetCompact (16 conv) | [xinntao/Real-ESRGAN v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
 | `bsrgan/bsrgan-x4.onnx` | 4x blind-degradation upscaler for real-world degraded content | 4x | RRDBNet (23 blocks) | [cszn/KAIR v1.0](https://github.com/cszn/KAIR/releases/tag/v1.0) |
 | `bsrgan/bsrgan-x2.onnx` | 2x blind-degradation upscaler | 2x | RRDBNet (23 blocks) | [cszn/KAIR v1.0](https://github.com/cszn/KAIR/releases/tag/v1.0) |

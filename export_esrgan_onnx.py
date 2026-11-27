@@ -2,7 +2,7 @@
 export_esrgan_onnx.py -- Export Real-ESRGAN weights to ONNX for use with EsrganUpscaler.
 
 Usage:
-    py export_esrgan_onnx.py [--out DIR] [--models all|x2plus|x4plus|animevideov3] [--tile-size N] [--no-simplify]
+    py export_esrgan_onnx.py [--out DIR] [--models all|x2plus|x4plus|animevideov3|general-x4v3|general-wdn-x4v3] [--tile-size N] [--no-simplify]
 
 Requirements:
     pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -92,6 +92,32 @@ _MODELS: dict[str, dict[str, object]] = {
             "releases/download/v0.2.5.0/realesr-animevideov3.pth"
         ),
         "pth_name": "realesr-animevideov3.pth",
+    },
+    # Real-ESRGAN Compact for general (live-action) video: the light model StreamDock's
+    # "Sharpen live video" path uses, at a fraction of RRDBNet's cost. Same release as
+    # animevideov3, twice the conv layers. The wdn ("with denoise") weights remove noise
+    # harder at the cost of fine texture; upstream blends the two with a denoise strength.
+    "general-x4v3": {
+        "out_name": "realesr-general-x4v3.onnx",
+        "arch": "srvgg",
+        "scale": 4,
+        "num_conv": 32,
+        "url": (
+            "https://github.com/xinntao/Real-ESRGAN/"
+            "releases/download/v0.2.5.0/realesr-general-x4v3.pth"
+        ),
+        "pth_name": "realesr-general-x4v3.pth",
+    },
+    "general-wdn-x4v3": {
+        "out_name": "realesr-general-wdn-x4v3.onnx",
+        "arch": "srvgg",
+        "scale": 4,
+        "num_conv": 32,
+        "url": (
+            "https://github.com/xinntao/Real-ESRGAN/"
+            "releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth"
+        ),
+        "pth_name": "realesr-general-wdn-x4v3.pth",
     },
 }
 
@@ -497,7 +523,7 @@ def main() -> None:
         default="all",
         help=(
             "Comma-separated list of model keys to export: "
-            "x2plus, x4plus, animevideov3, or 'all' (default: all)."
+            "x2plus, x4plus, animevideov3, general-x4v3, general-wdn-x4v3, or 'all' (default: all)."
         ),
     )
     parser.add_argument(

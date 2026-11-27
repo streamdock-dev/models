@@ -9,7 +9,8 @@ notices and license texts are reproduced below as required by each license.
 ## Real-ESRGAN
 
 Applies to: `realesrgan-x4plus.onnx`, `realesrgan-x2plus.onnx`,
-`realesr-animevideov3.onnx`, `realesr-animevideov3-batched.onnx`
+`realesr-animevideov3.onnx`, `realesr-animevideov3-batched.onnx`,
+`realesr-general-x4v3.onnx`, `realesr-general-wdn-x4v3.onnx`
 
 - **Project**: Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data
 - **Authors**: Xintao Wang, Liangbin Xie, Chao Dong, Ying Shan
@@ -24,6 +25,8 @@ The ONNX files are derived from the following upstream checkpoints:
 | `realesrgan-x2plus.onnx` | `RealESRGAN_x2plus.pth` | [v0.2.1](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.1) |
 | `realesr-animevideov3.onnx` | `realesr-animevideov3.pth` | [v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
 | `realesr-animevideov3-batched.onnx` | Derived from `realesr-animevideov3.onnx` above | -- |
+| `realesr-general-x4v3.onnx` | `realesr-general-x4v3.pth` | [v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
+| `realesr-general-wdn-x4v3.onnx` | `realesr-general-wdn-x4v3.pth` | [v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) |
 
 ```
 BSD 3-Clause License

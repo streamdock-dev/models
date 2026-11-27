@@ -8,6 +8,13 @@ All notable changes to this release package are documented here.
 
 ### Added
 
+- `realesr-general-x4v3.onnx` -- Real-ESRGAN Compact (SRVGGNetCompact, 32 conv) 4x for
+  general live-action video: a light model (about 5 MB) for real-time use, against 67 MB
+  for `realesrgan-x4plus`. Derived from `realesr-general-x4v3.pth` (xinntao/Real-ESRGAN
+  v0.2.5.0, BSD-3-Clause). Tile 128x128, dynamic batch, Resize nodes batch-safe.
+- `realesr-general-wdn-x4v3.onnx` -- the same network's "with denoise" weights: removes
+  noise harder at the cost of fine texture. Derived from `realesr-general-wdn-x4v3.pth`.
+
 - `cugan/up2x-latest-conservative.onnx` -- Real-CUGAN UpCunet2x 2x, light in-model
   denoising (noise level 1 -- conservative). Derived from `up2x-latest-conservative.pth`
   (bilibili/ailab updated_weights release). Same architecture as no-denoise; denoising is
